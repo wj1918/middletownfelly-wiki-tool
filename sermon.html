@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sermon To WIKI</title>
+  <style>
+  body {
+    font-size: 12px;
+    font-family: Arial;
+  }
+  </style>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<div id="container"> </div>
+<script> 
+var xml; 
+$.get( "proxy.php?url=http://www.mccc.org/sermon/mcccpodcasts_ch.xml", function( data ) {
+   $(data).find("item").each(function(){
+      var guid=$(this).find("guid").text();
+      var description=$(this).find("description").text();
+      var title=$(this).find("title").text();
+      var res=/([\d\-]*) (.*) - (.*)/.exec(title);
+      if(res){
+	var date=res[1];
+	var speaker=res[2];
+	var topic=res[3];
+	var dao=description.match(/主日講道 (.*)/);
+	if(dao){
+	  var bible=dao[1];
+	}
+	var txt="<P>**"+date+"**"+"<BR>"+"信息: [[@"+guid+"|("+speaker+") "+topic +"["+bible+"] ]]<BR>"+"敬拜诗歌:</P>";
+	$(txt).appendTo($("#content"));
+      }else{
+	$(title).appendTo($("#content"));
+      } 
+
+   });
+},"xml");
+
+</script>
+ 
+<div id="content"> </div>
+
+</body>
+</html>
+

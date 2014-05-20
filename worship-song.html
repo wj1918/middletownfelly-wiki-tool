@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Worship Song To WIKI</title>
+  <style>
+    body {
+      font-size: 12px;
+      font-family: Arial;
+    }
+  </style>
+  
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+</head>
+
+<div id="container"> </div>
+<script> 
+    
+  $(function() {
+    function lastline(lines){
+        var tmps=lines.split("\n");
+        for(var i=tmps.length-1;i>=0;i--){
+            var tmp=tmps[i];
+            if(tmp.trim().length>0)
+                return tmp.trim();
+        }
+        return lines;
+    }
+    $("#parse_button").click(function(event){
+        $("#content").text("");
+        var email=$("#emailtext").val();
+        
+        reg = new RegExp(
+            "http.*",
+            "gi");
+        var result;
+        var lastindex=0;
+        var sameSongIndex=0;
+        while ((result = reg.exec(email)) !== null) {
+            var url=result[0].trim();
+            var index=result.index;
+            var lines=email.substring(lastindex,index)
+            var song=lastline(lines).replace(/[0-9]\.\s*/,"");
+            console.log(song+ " "+url);
+            if(song.trim().length==0){
+                sameSongIndex++;
+                $("#content").append("[[@"+url+"|link"+(sameSongIndex+1)+"]] ");
+            }else{
+                $("#content").append("[[@"+url+"|"+song+"]] ");
+                sameSongIndex=0;
+            }
+            lastindex=reg.lastIndex;
+        }        
+        event.preventDefault();
+    });
+    
+      
+  });    
+</script>
+ 
+<textarea rows="20" cols="100" id="emailtext">
+</textarea>
+<br>
+<button id="parse_button">Parse the Email</button>
+<br>
+敬拜诗歌 : <span id="content"> </span>
+
+</body>
+</html>
+
